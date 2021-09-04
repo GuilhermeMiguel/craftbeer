@@ -30,10 +30,7 @@ public class BeerService {
 
 	public BeerDto findBeerById(Long id) {
 
-	//	var divisao = 10 / 0;
-		
-		var foundBeer = beerRepository.findById(id).orElseThrow(() ->
-        	new BeerNotFoundException("Beer not found"));
+		var foundBeer = findRegisterBeerById(id);
 				
 		return toBeerDto(foundBeer);
 	}
@@ -48,19 +45,9 @@ public class BeerService {
 		return foundBeer.stream().map(this::toBeerDto).collect(Collectors.toList());
 	}
 	
-	
-	private BeerDto toBeerDto(BeerEntity beerEntity) {
-		return modelMapper.map(beerEntity, BeerDto.class);
-	}
-	
-	private BeerEntity toBeerEntity(BeerCommand beerCommand) {
-		return modelMapper.map(beerCommand, BeerEntity.class);
-	}
-
 	public void updateCompleteBeerById(Long id,  BeerCommand beer) {
 		
-		var beerFound = beerRepository.findById(id)
-				.orElseThrow(() ->	new BeerNotFoundException("Beer bot found for id: " + id));
+		var beerFound = findRegisterBeerById(id);
 				
 				beerFound.setName(beer.getName());
 				beerFound.setIngredients(beer.getName());
@@ -72,8 +59,7 @@ public class BeerService {
 	}
 
 	public void updateBeerById(Long id, Map<String, Object> changesInBeer) {
-		var beerFound = beerRepository.findById(id)
-				.orElseThrow(() ->	new BeerNotFoundException("Beer bot found"));
+		var beerFound = findRegisterBeerById(id);
 		
 		changesInBeer.forEach(
 	                (change, value) -> {
@@ -93,6 +79,19 @@ public class BeerService {
 
 	public void deleteBeerById(Long id) {
 		beerRepository.deleteById(id);		
+	}
+	
+	private BeerEntity findRegisterBeerById(Long id) {
+		return beerRepository.findById(id)
+				.orElseThrow(() ->	new BeerNotFoundException("Beer bot found"));
+	}
+	
+	private BeerDto toBeerDto(BeerEntity beerEntity) {
+		return modelMapper.map(beerEntity, BeerDto.class);
+	}
+	
+	private BeerEntity toBeerEntity(BeerCommand beerCommand) {
+		return modelMapper.map(beerCommand, BeerEntity.class);
 	}
 
 }
