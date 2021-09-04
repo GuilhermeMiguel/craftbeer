@@ -1,6 +1,8 @@
 package com.beerhouse.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.beerhouse.command.BeerCommand;
 import com.beerhouse.dto.BeerDto;
 import com.beerhouse.entity.BeerEntity;
-import com.beerhouse.exception.BeerException;
+import com.beerhouse.exception.BeerNotFoundException;
 import com.beerhouse.repository.BeerRepository;
 
 @Service
@@ -28,8 +30,10 @@ public class BeerService {
 
 	public BeerDto findBeerById(Long id) {
 
+	//	var divisao = 10 / 0;
+		
 		var foundBeer = beerRepository.findById(id).orElseThrow(() ->
-        	new BeerException("Beer bot found"));
+        	new BeerNotFoundException("Beer not found"));
 				
 		return toBeerDto(foundBeer);
 	}
@@ -38,9 +42,8 @@ public class BeerService {
 		var foundBeer = beerRepository.findAll();
 		
 		if(foundBeer == null || foundBeer.size() == 0)
-			new BeerException("Beer bot found");
-		
-		//BeerDto map = modelMapper(foundBeer, BeerDto.class);
+			new BeerNotFoundException("Beers not found");
+				
 			
 		return foundBeer.stream().map(this::toBeerDto).collect(Collectors.toList());
 	}
@@ -52,6 +55,44 @@ public class BeerService {
 	
 	private BeerEntity toBeerEntity(BeerCommand beerCommand) {
 		return modelMapper.map(beerCommand, BeerEntity.class);
+	}
+
+	public void updateCompleteBeerById(Long id,  BeerCommand beer) {
+		
+		var beerFound = beerRepository.findById(id)
+				.orElseThrow(() ->	new BeerNotFoundException("Beer bot found for id: " + id));
+				
+				beerFound.setName(beer.getName());
+				beerFound.setIngredients(beer.getName());
+				beerFound.setCategory(beer.getCategory());
+				beerFound.setAlcoholContent(beer.getAlcoholContent());
+				beerFound.setPrice(beer.getPrice());
+					
+				beerRepository.save(beerFound);
+	}
+
+	public void updateBeerById(Long id, Map<String, Object> changesInBeer) {
+		var beerFound = beerRepository.findById(id)
+				.orElseThrow(() ->	new BeerNotFoundException("Beer bot found"));
+		
+		changesInBeer.forEach(
+	                (change, value) -> {
+	                    switch (change){
+	                        case "name": beerFound.setName((String) value); break;
+	                        case "ingredients": beerFound.setIngredients((String) value); break;
+	                        case "alcoholContent":  beerFound.setAlcoholContent((String) value); break;
+	                        case "category":  beerFound.setCategory((String) value); break;
+	                        case "price":  beerFound.setPrice((BigDecimal) value); break;
+	                    }
+	                }
+	        );
+		 
+		 beerRepository.save(beerFound);
+		 
+	}
+
+	public void deleteBeerById(Long id) {
+		beerRepository.deleteById(id);		
 	}
 
 }

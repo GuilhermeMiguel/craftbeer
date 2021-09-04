@@ -16,7 +16,6 @@ import lombok.Data;
 @Entity
 @Table(name = "beer")
 @Data
-
 public class BeerEntity {
 	
 	@Id
