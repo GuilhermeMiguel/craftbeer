@@ -27,7 +27,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api("Controller to categories Management")
+@Api("Controller to Categories Management")
 @RequestMapping("/category")
 public class CategoryController {
 
@@ -37,49 +37,49 @@ public class CategoryController {
 	
 	@Transactional
 	@PostMapping()
-	@ApiOperation(value = "")
-	public ResponseEntity<Void> registerCategory(@RequestBody CategoryCommand newCategory, HttpServletRequest request) {
+	@ApiOperation(value = "Register a new category")
+	public ResponseEntity<CategoryDto> registerCategory(@RequestBody CategoryCommand newCategory, HttpServletRequest request) {
 
-		categoryService.registerCategory(newCategory);
+		var categorySaved = categoryService.registerCategory(newCategory);
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(categorySaved, HttpStatus.OK);
 	}
 	
 	
 	@GetMapping()
-	@ApiOperation(value = "")
+	@ApiOperation(value = "Search all categories with pagination")
 	public ResponseEntity<List<CategoryDto>> findAllCategories(@RequestParam (required=false) Integer page, @RequestParam (required=false) Integer size) {
 
-		var categories = categoryService.findAllCategories(page, size);
+		var foundCategories = categoryService.findAllCategories(page, size);
 			
-		return new ResponseEntity<>(categories, HttpStatus.OK);
+		return new ResponseEntity<>(foundCategories, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	@ApiOperation(value = "")
+	@ApiOperation(value = "Search a category by Id")
 	public ResponseEntity<CategoryDto> findCategoryById(@PathVariable Long id) {
 
-		var category = categoryService.findCategoryById(id);
+		var foundCategory = categoryService.findCategoryById(id);
 			
-		return new ResponseEntity<>(category, HttpStatus.OK);
+		return new ResponseEntity<>(foundCategory, HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}")
-	@ApiOperation(value = "")
-	public ResponseEntity<Void> updateCompleteCategoryById(@PathVariable Long id, @RequestBody CategoryCommand category) {
+	@ApiOperation(value = "Update a complete category's register by Id")
+	public ResponseEntity<CategoryDto> updateCompleteCategoryById(@PathVariable Long id, @RequestBody CategoryCommand category) {
 
-		categoryService.updateCompleteCategoryById(id, category);
+		var updatedCategory = categoryService.updateCompleteCategoryById(id, category);
 			
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{id}")
-	@ApiOperation(value = "")
-	public ResponseEntity<Void> updateBeerById(@PathVariable Long id, @RequestBody Map<String, Object> changesInBeer) {
+	@ApiOperation(value = "Update items of a category's registered by Id")
+	public ResponseEntity<CategoryDto> updateCategoryById(@PathVariable Long id, @RequestBody Map<String, Object> changesInBeer) {
 
-		categoryService.updateCategoryById(id, changesInBeer);
+		var updatedCategory = categoryService.updateCategoryById(id, changesInBeer);
 			
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
 	}
 	
 }

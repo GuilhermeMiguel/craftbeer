@@ -29,7 +29,7 @@ public class CategoryEntity {
 	
 	@NotNull
 	@NotBlank
-	@Size (max = 200)
+	@Size (max = 300)
 	private String description;
 		
 	

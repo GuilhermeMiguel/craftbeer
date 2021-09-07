@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,8 +30,7 @@ public class BeerEntity {
 	private String name;
 	
 	@NotNull
-	@NotBlank
-	private String ingredients;
+	private Double milliliters;
 	
 	@NotNull
 	@NotBlank
@@ -41,7 +40,7 @@ public class BeerEntity {
 	@NotNull
 	private BigDecimal price;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(nullable = false)
 	private CategoryEntity category;
 	
@@ -49,9 +48,9 @@ public class BeerEntity {
 	public BeerEntity() {
 	}
 
-	public BeerEntity(String name, String ingredients, String alcoholContent, BigDecimal price, CategoryEntity category) {
+	public BeerEntity(String name, Double milliliters, String alcoholContent, BigDecimal price, CategoryEntity category) {
 		this.name = name;
-		this.ingredients = ingredients;
+		this.milliliters = milliliters;
 		this.alcoholContent = alcoholContent;
 		this.price = price;
 		this.category = category;

@@ -32,9 +32,9 @@ public class CategoryService {
 	
 	public CategoryDto findCategoryById(Long id) {
 
-		var categoryFound = findRegisterCategoryById(id);
+		var foundCategory = findRegisterCategoryById(id);
 					
-		return toCategoryDto(categoryFound);
+		return toCategoryDto(foundCategory);
 	}
 	
 	public List<CategoryDto> findAllCategories(Integer page, Integer size) {
@@ -47,7 +47,7 @@ public class CategoryService {
 			foundCategories = categoryRepository.findAll();
 		
 		if(foundCategories == null || foundCategories.size() == 0)
-			new CategoryNotFoundException("Category not found");
+			new CategoryNotFoundException("Categories not found");
 				
 			
 		return foundCategories.stream().map(this::toCategoryDto).collect(Collectors.toList());
@@ -76,7 +76,6 @@ public class CategoryService {
 	                        case "name": categoryFound.setName((String) value); break;
 	                        case "description": categoryFound.setDescription((String) value); break;
 	                        case "enabled":  categoryFound.setEnabled((Boolean) value); break;
-	                        
 	                    }
 	                }
 	        );

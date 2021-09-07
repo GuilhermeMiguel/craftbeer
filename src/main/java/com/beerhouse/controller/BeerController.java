@@ -28,7 +28,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api("Controller to Beer Inventory Management")
+@Api("Controller to Bees Management")
 @RequestMapping("/beer")
 public class BeerController {
 
@@ -38,53 +38,53 @@ public class BeerController {
 	
 	@Transactional
 	@PostMapping()
-	@ApiOperation(value = "")
-	public ResponseEntity<Void> registerBeer(@RequestBody BeerCommand beer, HttpServletRequest request) {
+	@ApiOperation(value = "Register a new beer")
+	public ResponseEntity<BeerDto> registerBeer(@RequestBody BeerCommand beer, HttpServletRequest request) {
 
-		beerService.registerBeer(beer);
+		var savedBeer = beerService.registerBeer(beer);
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(savedBeer, HttpStatus.OK);
 	}
-	
-	
+		
 	@GetMapping()
-	@ApiOperation(value = "")
-	public ResponseEntity<List<BeerDto>> findAllBeers(@RequestParam (required=false) Integer page, @RequestParam (required=false) Integer size) {
+	@ApiOperation(value = "Search all beers with pagination and filters")
+	public ResponseEntity<List<BeerDto>> findAllBeers(@RequestParam (required=false) Integer page, @RequestParam (required=false) Integer size, 
+			@RequestParam (required=false) String nameSearch, @RequestParam (required=false) Long idCategory) {
 
-		var beer = beerService.findAllBeers(page, size);
+		var foundBeers = beerService.findAllBeerWithFilters(nameSearch, idCategory, page, size);
 			
-		return new ResponseEntity<>(beer, HttpStatus.OK);
+		return new ResponseEntity<>(foundBeers, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	@ApiOperation(value = "")
+	@ApiOperation(value = "Search a beer by Id")
 	public ResponseEntity<BeerDto> findBeerById(@PathVariable Long id) {
 
-		var beer = beerService.findBeerById(id);
+		var foundBeer = beerService.findBeerById(id);
 			
-		return new ResponseEntity<>(beer, HttpStatus.OK);
+		return new ResponseEntity<>(foundBeer, HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}")
-	@ApiOperation(value = "")
-	public ResponseEntity<Void> updateCompleteBeerById(@PathVariable Long id, @RequestBody BeerCommand beer) {
+	@ApiOperation(value = "Update a complete beer's register by Id")
+	public ResponseEntity<BeerDto> updateCompleteBeerById(@PathVariable Long id, @RequestBody BeerCommand beer) {
 
-		beerService.updateCompleteBeerById(id, beer);
+		var updatedBeer =  beerService.updateCompleteBeerById(id, beer);
 			
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(updatedBeer, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/{id}")
-	@ApiOperation(value = "")
-	public ResponseEntity<Void> updateBeerById(@PathVariable Long id, @RequestBody Map<String, Object> changesInBeer) {
+	@ApiOperation(value = "Update items of a beer's registered by Id")
+	public ResponseEntity<BeerDto> updateBeerById(@PathVariable Long id, @RequestBody Map<String, Object> changesInBeer) {
 
-		beerService.updateBeerById(id, changesInBeer);
+		var updatedBeer = beerService.updateBeerById(id, changesInBeer);
 			
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(updatedBeer, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
-	@ApiOperation(value = "")
+	@ApiOperation(value = "Delete a beer by Id")
 	public ResponseEntity<Void> deleteBeerById(@PathVariable Long id) {
 
 		beerService.deleteBeerById(id);

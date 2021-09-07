@@ -36,7 +36,6 @@ public class ApplicationExceptionHandler {
 		var response = new ExceptionResponseDto();
 
 		response.setTimestamp(new Date().getTime());
-		//response.setError(ex.getClass().getTypeName());
 		response.setMessage(ex.getMessage());
 		response.setTitle("Internal Server Error");
 		

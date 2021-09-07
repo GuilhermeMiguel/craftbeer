@@ -13,7 +13,7 @@ public class BeerDto {
 	
 	private Long id;
 	private String name;
-	private String ingredients;
+	private Double milliliters;
 	private String alcoholContent;
 	private BigDecimal price;
 	private CategoryDto category;

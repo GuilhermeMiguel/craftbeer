@@ -19,15 +19,13 @@ public class BeerCommand {
 	private String name;
 	
 	@NotNull
-	@NotBlank
-	private String ingredients;
+	private Double milliliters;
 	
 	@NotNull
 	@NotBlank
 	private String alcoholContent;
 	
 	@NotNull
-	@NotBlank
 	private BigDecimal price;
 	
 	@NotNull

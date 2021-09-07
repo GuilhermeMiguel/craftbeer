@@ -7,7 +7,7 @@ import com.beerhouse.command.BeerCommand;
 public class BeerCommandBuilder {
 
 	private String name;
-	private String ingredients;
+	private Double milliliters;
 	private String alcoholContent;
 	private BigDecimal price;
 	private Long idCategory;
@@ -17,8 +17,8 @@ public class BeerCommandBuilder {
 		return this;
 	}
 	
-	public BeerCommandBuilder withIngredients(String ingredients) {
-		this.ingredients = ingredients;
+	public BeerCommandBuilder withMilliliters(Double milliliters) {
+		this.milliliters = milliliters;
 		return this;
 	}
 	
@@ -38,6 +38,6 @@ public class BeerCommandBuilder {
 	}
 	
 	public BeerCommand build() {
-		return new BeerCommand(name, ingredients, alcoholContent, price, idCategory);
+		return new BeerCommand(name, milliliters, alcoholContent, price, idCategory);
 	}
 }

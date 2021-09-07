@@ -49,19 +49,18 @@ public class BeerService {
 		return toBeerDto(foundBeer);
 	}
 	
-	public List<BeerDto> findAllBeers(Integer page, Integer size) {
+	public List<BeerDto> findAllBeerWithFilters(String nameSearch, Long idCategory, Integer page, Integer size) {
 		
 		List<BeerEntity> foundBeers = new ArrayList<>();
 		
 		if(page != null && size != null) 
-			foundBeers = beerRepository.findAll(PageRequest.of(page - 1, size)).getContent(); 	
+			foundBeers = beerRepository.findAllBeerByNameAndCategoryId(nameSearch, idCategory, PageRequest.of(page - 1, size))
+				.orElseThrow(() ->	new BeerNotFoundException("Beers not found for this parameters"));
+	
 		else 
-			foundBeers = beerRepository.findAll();
+			foundBeers = beerRepository.findAllBeerByNameAndCategoryId(nameSearch, idCategory)
+				.orElseThrow(() ->	new BeerNotFoundException("Beers not found for this parameters"));
 		
-		if(foundBeers == null || foundBeers.size() == 0)
-			new BeerNotFoundException("Beers not found");
-				
-			
 		return foundBeers.stream().map(this::toBeerDto).collect(Collectors.toList());
 	}
 	
@@ -72,7 +71,7 @@ public class BeerService {
 		var beerFound = findRegisterBeerById(id);
 				
 			beerFound.setName(beer.getName());
-			beerFound.setIngredients(beer.getName());
+			beerFound.setMilliliters(beer.getMilliliters());
 			beerFound.setCategory(foundCategory);
 			beerFound.setAlcoholContent(beer.getAlcoholContent());
 			beerFound.setPrice(beer.getPrice());
@@ -89,12 +88,12 @@ public class BeerService {
 	                (change, value) -> {
 	                    switch (change){
 	                        case "name": beerFound.setName((String) value); break;
-	                        case "ingredients": beerFound.setIngredients((String) value); break;
+	                        case "milliliters": beerFound.setMilliliters((Double) value); break;
 	                        case "alcoholContent":  beerFound.setAlcoholContent((String) value); break;
 	                        case "idCategory":  beerFound.setCategory(
-	                        						categoryService.findRegisterCategoryById((Long) changesInBeer.get("idCategory"))
+	                        						categoryService.findRegisterCategoryById(((Integer) changesInBeer.get("idCategory")).longValue())
 	                        					); break;
-	                        case "price":  beerFound.setPrice((BigDecimal) value); break;
+	                        case "price":  beerFound.setPrice(BigDecimal.valueOf((Double) value)); break;
 	                    }
 	                }
 	        );
@@ -110,7 +109,7 @@ public class BeerService {
 	
 	private BeerEntity findRegisterBeerById(Long id) {
 		return beerRepository.findById(id)
-				.orElseThrow(() ->	new BeerNotFoundException("Beer bot found"));
+				.orElseThrow(() ->	new BeerNotFoundException("Beer not found for this id: " + id));
 	}
 	
 	private BeerDto toBeerDto(BeerEntity beerEntity) {
