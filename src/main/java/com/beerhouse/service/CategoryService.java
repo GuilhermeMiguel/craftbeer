@@ -1,11 +1,13 @@
 package com.beerhouse.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.beerhouse.command.CategoryCommand;
@@ -23,9 +25,9 @@ public class CategoryService {
 	@Autowired
     private ModelMapper modelMapper;
 	
-	public void registerCategory(CategoryCommand newCategory) {
-		categoryRepository.save(toCategoryEntity(newCategory));
-		
+	public CategoryDto registerCategory(CategoryCommand newCategory) {
+		var savedCategory = categoryRepository.save(toCategoryEntity(newCategory));
+		return toCategoryDto(savedCategory);
 	}
 	
 	public CategoryDto findCategoryById(Long id) {
@@ -35,8 +37,14 @@ public class CategoryService {
 		return toCategoryDto(categoryFound);
 	}
 	
-	public List<CategoryDto> findAllCategories() {
-		var foundCategories = categoryRepository.findAll();
+	public List<CategoryDto> findAllCategories(Integer page, Integer size) {
+		
+		List<CategoryEntity> foundCategories = new ArrayList<>();
+		
+		if(page != null && size != null) 
+			foundCategories = categoryRepository.findAll(PageRequest.of(page - 1, size)).getContent();
+		else	
+			foundCategories = categoryRepository.findAll();
 		
 		if(foundCategories == null || foundCategories.size() == 0)
 			new CategoryNotFoundException("Category not found");
@@ -45,7 +53,7 @@ public class CategoryService {
 		return foundCategories.stream().map(this::toCategoryDto).collect(Collectors.toList());
 	}
 	
-	public void updateCompleteCategoryById(Long id,  CategoryCommand category) {
+	public CategoryDto updateCompleteCategoryById(Long id,  CategoryCommand category) {
 		
 		var categoryFound = findRegisterCategoryById(id);
 				
@@ -54,10 +62,12 @@ public class CategoryService {
 		categoryFound.setEnabled(category.getEnabled());
 				
 					
-		categoryRepository.save(categoryFound);
+		var updatedCategory = categoryRepository.save(categoryFound);
+		
+		return toCategoryDto(updatedCategory);
 	}
 	
-	public void updateCategoryById(Long id, Map<String, Object> changesInCategory) {
+	public CategoryDto updateCategoryById(Long id, Map<String, Object> changesInCategory) {
 		var categoryFound = findRegisterCategoryById(id);
 		
 		changesInCategory.forEach(
@@ -71,11 +81,12 @@ public class CategoryService {
 	                }
 	        );
 		 
-		categoryRepository.save(categoryFound);
-		 
+		var updatedCategory = categoryRepository.save(categoryFound);
+		
+		return toCategoryDto(updatedCategory);
 	}
 	
-	private CategoryEntity findRegisterCategoryById(Long id) {
+	protected CategoryEntity findRegisterCategoryById(Long id) {
 		return categoryRepository.findById(id)
 				.orElseThrow(() ->	new CategoryNotFoundException("Category not found for id: " + id));
 	}

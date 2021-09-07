@@ -16,5 +16,5 @@ public class BeerDto {
 	private String ingredients;
 	private String alcoholContent;
 	private BigDecimal price;
-	private String category;
+	private CategoryDto category;
 }

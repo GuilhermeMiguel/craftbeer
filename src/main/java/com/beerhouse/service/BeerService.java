@@ -1,12 +1,14 @@
 package com.beerhouse.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.beerhouse.command.BeerCommand;
@@ -22,10 +24,22 @@ public class BeerService {
 	private BeerRepository beerRepository;
 	
 	@Autowired
+	private CategoryService categoryService;
+	
+	@Autowired
     private ModelMapper modelMapper;
 	
-	public void registerBeer(BeerCommand beer) {
-		beerRepository.save(toBeerEntity(beer));
+	public BeerDto registerBeer(BeerCommand beer) {
+		var foundCategory = categoryService.findRegisterCategoryById(beer.getIdCategory());
+		
+		var beerEntity = toBeerEntity(beer);
+		
+		beerEntity.setCategory(foundCategory);
+		beerEntity.setId(null);
+		
+		var savedBeer = beerRepository.save(beerEntity);
+		
+		return toBeerDto(savedBeer);
 	}
 
 	public BeerDto findBeerById(Long id) {
@@ -35,30 +49,40 @@ public class BeerService {
 		return toBeerDto(foundBeer);
 	}
 	
-	public List<BeerDto> findAllBeers() {
-		var foundBeer = beerRepository.findAll();
+	public List<BeerDto> findAllBeers(Integer page, Integer size) {
 		
-		if(foundBeer == null || foundBeer.size() == 0)
+		List<BeerEntity> foundBeers = new ArrayList<>();
+		
+		if(page != null && size != null) 
+			foundBeers = beerRepository.findAll(PageRequest.of(page - 1, size)).getContent(); 	
+		else 
+			foundBeers = beerRepository.findAll();
+		
+		if(foundBeers == null || foundBeers.size() == 0)
 			new BeerNotFoundException("Beers not found");
 				
 			
-		return foundBeer.stream().map(this::toBeerDto).collect(Collectors.toList());
+		return foundBeers.stream().map(this::toBeerDto).collect(Collectors.toList());
 	}
 	
-	public void updateCompleteBeerById(Long id,  BeerCommand beer) {
+	public BeerDto updateCompleteBeerById(Long id,  BeerCommand beer) {
+		
+		var foundCategory = categoryService.findRegisterCategoryById(beer.getIdCategory());
 		
 		var beerFound = findRegisterBeerById(id);
 				
-				beerFound.setName(beer.getName());
-				beerFound.setIngredients(beer.getName());
-				beerFound.setCategory(beer.getCategory());
-				beerFound.setAlcoholContent(beer.getAlcoholContent());
-				beerFound.setPrice(beer.getPrice());
-					
-				beerRepository.save(beerFound);
+			beerFound.setName(beer.getName());
+			beerFound.setIngredients(beer.getName());
+			beerFound.setCategory(foundCategory);
+			beerFound.setAlcoholContent(beer.getAlcoholContent());
+			beerFound.setPrice(beer.getPrice());
+				
+		var beerUpdated = beerRepository.save(beerFound);
+		
+		return toBeerDto(beerUpdated);
 	}
 
-	public void updateBeerById(Long id, Map<String, Object> changesInBeer) {
+	public BeerDto updateBeerById(Long id, Map<String, Object> changesInBeer) {
 		var beerFound = findRegisterBeerById(id);
 		
 		changesInBeer.forEach(
@@ -67,14 +91,17 @@ public class BeerService {
 	                        case "name": beerFound.setName((String) value); break;
 	                        case "ingredients": beerFound.setIngredients((String) value); break;
 	                        case "alcoholContent":  beerFound.setAlcoholContent((String) value); break;
-	                        case "category":  beerFound.setCategory((String) value); break;
+	                        case "idCategory":  beerFound.setCategory(
+	                        						categoryService.findRegisterCategoryById((Long) changesInBeer.get("idCategory"))
+	                        					); break;
 	                        case "price":  beerFound.setPrice((BigDecimal) value); break;
 	                    }
 	                }
 	        );
 		 
-		 beerRepository.save(beerFound);
+		var beerUpdated = beerRepository.save(beerFound);
 		 
+		return toBeerDto(beerUpdated);
 	}
 
 	public void deleteBeerById(Long id) {

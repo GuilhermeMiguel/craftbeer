@@ -32,6 +32,6 @@ public class BeerCommand {
 	
 	@NotNull
 	@NotBlank
-	private String category;
+	private Long idCategory;
 	  
 }

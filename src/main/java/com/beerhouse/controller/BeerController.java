@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.beerhouse.command.BeerCommand;
@@ -48,9 +49,9 @@ public class BeerController {
 	
 	@GetMapping()
 	@ApiOperation(value = "")
-	public ResponseEntity<List<BeerDto>> findAllBeers() {
+	public ResponseEntity<List<BeerDto>> findAllBeers(@RequestParam (required=false) Integer page, @RequestParam (required=false) Integer size) {
 
-		var beer = beerService.findAllBeers();
+		var beer = beerService.findAllBeers(page, size);
 			
 		return new ResponseEntity<>(beer, HttpStatus.OK);
 	}
