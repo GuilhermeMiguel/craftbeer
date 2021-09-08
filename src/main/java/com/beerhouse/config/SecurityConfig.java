@@ -11,11 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Value("${usuario-autenticacao}")
-	private String usuarioAutenticacao;
+	@Value("${user-authentication}")
+	private String userAuthentication;
 	
-	@Value("${senha-autenticacao}")
-	private String senhaAutenticacao;
+	@Value("${password-authentication}")
+	private String passwordAuthentication;
 	
 	
 	@Override
@@ -32,8 +32,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             throws Exception 
     {
         auth.inMemoryAuthentication()
-            .withUser(usuarioAutenticacao)
-            .password("{noop}" +senhaAutenticacao)
+            .withUser(userAuthentication)
+            .password("{noop}" +passwordAuthentication)
             .roles("ADMIN");
     }
 	

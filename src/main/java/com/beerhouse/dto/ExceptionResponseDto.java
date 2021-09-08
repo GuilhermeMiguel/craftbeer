@@ -7,7 +7,6 @@ public class ExceptionResponseDto {
 
 	private Long timestamp;
 	private Integer httpStatus;
-	//private String error;
 	private String title;
 	private String message;
 	private String path;
