@@ -94,6 +94,12 @@ Dica: Copie e cole o conteúdo do arquivo acima no [Swagger Editor](https://edit
 
 ## Seção reservada para que você descreva brevemente como executar o seu projeto
 
-Pode ser algo simples, como executar o arquivo Application.java. Ou talvez tenha alguma dependência como base de dados, por exemplo.
-
-TODO
+Pontos importantes:
+- Repositório: https://github.com/GuilhermeMiguel/craftbeer
+- Código em Develop e Master
+- Está rodando na porta 9000
+- Conta com Swagger, em http://localhost:9000/swagger-ui.html
+- Utiliza o banco h2 para desenvolvimento e testes (mas com contextos diferentes)
+- Utiliza o HTTP Basic para autenticação das requisições (já configurado na documentação do Postman - Link: https://www.postman.com/collections/11664467a45107ad8f3d)
+- Contém testes unitários e de integração
+- Possui DockerFile
