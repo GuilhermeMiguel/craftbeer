@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
@@ -33,6 +34,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 	        
 		return new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(RequestHandlerSelectors.basePackage("com.beerhouse"))
+				.paths(PathSelectors.ant("/**"))
 				.build().apiInfo(metaData())
 				.globalOperationParameters(Arrays.asList(parameter));
 	}

@@ -34,17 +34,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
             .withUser(usuarioAutenticacao)
             .password("{noop}" +senhaAutenticacao)
-            .roles("USER");
+            .roles("ADMIN");
     }
 	
 	@Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs",
-                                   "/configuration/ui",
-                                   "/swagger-resources/**",
-                                   "/configuration/security",
-                                   "/swagger-ui.html",
-                                   "/swagger-ui.html/**",
-                                   "/webjars/**");
+		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
     }
 }
