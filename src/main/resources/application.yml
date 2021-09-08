@@ -9,7 +9,9 @@ spring:
     hibernate:
       ddl-auto: create-drop
       
-      
+usuario-autenticacao: sensedia
+senha-autenticacao: 2021
+
 server:
-  port: 8090
+  port: 9000
   

@@ -21,5 +21,4 @@ public interface BeerRepository extends JpaRepository<BeerEntity, Long> {
 		      + " or t2.id = :idCategory)")
 	Optional<List<BeerEntity>>  findAllBeerByNameAndCategoryId(String name, Long idCategory, Pageable pageable);
 
-//	Optional<List<BeerEntity>> findAllBeerByCategoryId(Long idCategory);
 }
