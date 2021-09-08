@@ -2,16 +2,13 @@ spring:
   datasource:
     driverClassName: org.h2.Driver
     password: ''
-    url: jdbc:h2:mem:dbbeers
+    url: jdbc:h2:mem:dbbeers-test
     username: sa
+    initialization-mode: never
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-      
-usuario-autenticacao: sensedia
-senha-autenticacao: 2021
+     
 
-server:
-  port: 9000
   
